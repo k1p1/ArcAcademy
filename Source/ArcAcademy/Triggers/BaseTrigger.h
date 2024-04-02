@@ -19,11 +19,14 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	virtual void Action(AActor* InTarget);
+	void CustomTick();
 
 	UPROPERTY()
 	AActor* Target;
 	UPROPERTY(EditAnywhere)
 	float Range;
+	UPROPERTY(EditAnywhere)
+	float CustomTickRate = 1.0f;
 
 public:	
 	// Called every frame

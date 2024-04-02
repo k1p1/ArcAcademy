@@ -11,6 +11,7 @@
 #include "Materials/Material.h"
 #include "Engine/World.h"
 #include "ArcAcademyGameMode.h"
+#include "ArcAcademy.h"
 
 AArcAcademyCharacter::AArcAcademyCharacter()
 {
@@ -56,6 +57,7 @@ void AArcAcademyCharacter::Tick(float DeltaSeconds)
 void AArcAcademyCharacter::TakeAnyDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser)
 {
 	Health -= Damage;
+	UE_LOG(LogArcAcademy, Log, TEXT("Health %f"), Health);
 	if (Health <= 0.0f)
 	{
 		Death();
@@ -64,9 +66,26 @@ void AArcAcademyCharacter::TakeAnyDamage(AActor* DamagedActor, float Damage, con
 
 void AArcAcademyCharacter::Death()
 {
+	UWorld* World = GetWorld();
+	if (IsValid(World) == false)
+	{
+		return;
+	}
+
 	AArcAcademyGameMode* GameMode = Cast<AArcAcademyGameMode>(GetWorld()->GetAuthGameMode());
 	if (IsValid(GameMode))
 	{
 		GameMode->EndGame(false);
 	}
+
+	FActorSpawnParameters SpawnParameters;
+	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	FVector Location = GetActorLocation();
+	FRotator Rotation = GetActorRotation();
+	AActor* AfterDeathActor = World->SpawnActor(AfterDeathSpawnActorClass, &Location, &Rotation, SpawnParameters);
+	if (IsValid(AfterDeathActor) == false)
+	{
+		UE_LOG(LogArcAcademy, Log, TEXT("IsValid(AfterDeathActor) == false"));
+	}
+	Destroy();
 }

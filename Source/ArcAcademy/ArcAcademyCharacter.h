@@ -37,5 +37,8 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	float Health = 100;
+
+	UPROPERTY(EditAnywhere)
+		TSubclassOf<AActor> AfterDeathSpawnActorClass;
 };
 
