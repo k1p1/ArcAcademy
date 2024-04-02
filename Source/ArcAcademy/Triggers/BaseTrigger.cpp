@@ -24,6 +24,14 @@ void ABaseTrigger::BeginPlay()
 	{
 		Target = Actors[0];
 	}
+
+	FTimerHandle CustomTickTimerHandle;
+
+	UWorld* World = GetWorld();
+	if (IsValid(World))
+	{
+		World->GetTimerManager().SetTimer(CustomTickTimerHandle, this, &ABaseTrigger::CustomTick, CustomTickRate, true);
+	}
 }
 
 void ABaseTrigger::Action(AActor* InTarget)
@@ -31,11 +39,8 @@ void ABaseTrigger::Action(AActor* InTarget)
 
 }
 
-// Called every frame
-void ABaseTrigger::Tick(float DeltaTime)
+void ABaseTrigger::CustomTick()
 {
-	Super::Tick(DeltaTime);
-
 	if (IsValid(Target))
 	{
 		if ((GetActorLocation() - Target->GetActorLocation()).Length() < Range)
@@ -43,5 +48,11 @@ void ABaseTrigger::Tick(float DeltaTime)
 			Action(Target);
 		}
 	}
+}
+
+// Called every frame
+void ABaseTrigger::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
 }
 
