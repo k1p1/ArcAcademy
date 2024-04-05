@@ -5,7 +5,7 @@
 #include "../ArcAcademyCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
-void ASlowTrigger::Action(AActor* InTarget)
+void ASlowTrigger::ActionStart(AActor* InTarget)
 {
   AArcAcademyCharacter* Character = Cast<AArcAcademyCharacter>(InTarget);
   if (IsValid(Character))
@@ -13,7 +13,21 @@ void ASlowTrigger::Action(AActor* InTarget)
     UCharacterMovementComponent* MovementComponent = Character->GetCharacterMovement();
     if (IsValid(MovementComponent))
     {
+      TargetMaxWalkSpeed = MovementComponent->MaxWalkSpeed;
       MovementComponent->MaxWalkSpeed = MaxWalkSpeed;
+    }
+  }
+}
+
+void ASlowTrigger::ActionEnd(AActor* InTarget)
+{
+  AArcAcademyCharacter* Character = Cast<AArcAcademyCharacter>(InTarget);
+  if (IsValid(Character))
+  {
+    UCharacterMovementComponent* MovementComponent = Character->GetCharacterMovement();
+    if (IsValid(MovementComponent))
+    {
+      MovementComponent->MaxWalkSpeed = TargetMaxWalkSpeed;
     }
   }
 }

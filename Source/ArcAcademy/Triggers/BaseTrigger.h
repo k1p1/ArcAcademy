@@ -18,18 +18,14 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-	virtual void Action(AActor* InTarget);
-	void CustomTick();
+	virtual void ActionStart(AActor* InTarget);
+	virtual void ActionEnd(AActor* InTarget);
+	UFUNCTION()
+	void OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* Other, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	UFUNCTION()
+	void OnEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* Other, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
-	UPROPERTY()
-	AActor* Target;
 	UPROPERTY(EditAnywhere)
-	float Range;
-	UPROPERTY(EditAnywhere)
-	float CustomTickRate = 1.0f;
-
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+	class USphereComponent* SphereComponent;
 
 };
