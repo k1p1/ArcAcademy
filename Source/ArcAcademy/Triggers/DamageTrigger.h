@@ -15,7 +15,17 @@ class ARCACADEMY_API ADamageTrigger : public ABaseTrigger
 	GENERATED_BODY()
 
 protected:
-	virtual void Action(AActor* InTarget) override;
+	virtual void ActionStart(AActor* InTarget) override;
+	virtual void ActionEnd(AActor* InTarget) override;
+	UFUNCTION()
+	void DamageTick();
+
 	UPROPERTY(EditAnywhere)
 	float Damage = 1.0f;
+	UPROPERTY(EditAnywhere)
+	float DamageTickRate = 1.0f;
+	UPROPERTY()
+	AActor* Target;
+
+	FTimerHandle DamageTimerHandle;
 };

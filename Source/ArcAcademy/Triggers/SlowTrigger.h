@@ -15,8 +15,11 @@ class ARCACADEMY_API ASlowTrigger : public ABaseTrigger
 	GENERATED_BODY()
 
 protected:
-	virtual void Action(AActor* InTarget);
+	virtual void ActionStart(AActor* InTarget);
+	virtual void ActionEnd(AActor* InTarget);
 	
 	UPROPERTY(EditAnywhere)
 	float MaxWalkSpeed;
+
+	float TargetMaxWalkSpeed;
 };

@@ -52,6 +52,21 @@ AArcAcademyCharacter::AArcAcademyCharacter()
 void AArcAcademyCharacter::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
+
+		UWorld* World = GetWorld();
+		if (IsValid(World))
+		{
+			FHitResult HitResult;
+			FVector TraceStartLocation = GetActorLocation();
+			FVector TraceEndLocation = GetActorLocation() + GetActorForwardVector() * 300.0f;
+			FCollisionQueryParams Params;
+			Params.AddIgnoredActor(this);
+			if (World->LineTraceSingleByChannel(HitResult, TraceStartLocation, TraceEndLocation, ECollisionChannel::ECC_WorldDynamic, Params))
+			{
+				UE_LOG(LogArcAcademy, Log, TEXT("TraceHit Actor: %s, Component: %s"), *HitResult.GetActor()->GetName(), *HitResult.GetComponent()->GetName());
+			}
+		}
+
 }
 
 void AArcAcademyCharacter::TakeAnyDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser)

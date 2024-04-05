@@ -15,6 +15,6 @@ class ARCACADEMY_API AWinTrigger : public ABaseTrigger
 	GENERATED_BODY()
 
 protected:
-	virtual void Action(AActor* InTarget) override;
+	virtual void ActionStart(AActor* InTarget) override;
 	
 };

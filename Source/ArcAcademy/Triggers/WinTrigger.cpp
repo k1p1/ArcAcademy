@@ -4,7 +4,7 @@
 #include "WinTrigger.h"
 #include "../ArcAcademyGameMode.h"
 
-void AWinTrigger::Action(AActor* InTarget)
+void AWinTrigger::ActionStart(AActor* InTarget)
 {
 	AArcAcademyGameMode* GameMode = Cast<AArcAcademyGameMode>(GetWorld()->GetAuthGameMode());
 	if (IsValid(GameMode))
