@@ -10,6 +10,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Materials/Material.h"
 #include "Engine/World.h"
+#include "Abilities/BaseAbility.h"
 #include "ArcAcademyGameMode.h"
 #include "ArcAcademy.h"
 
@@ -49,6 +50,13 @@ AArcAcademyCharacter::AArcAcademyCharacter()
 	OnTakeAnyDamage.AddDynamic(this, &AArcAcademyCharacter::TakeAnyDamage);
 }
 
+void AArcAcademyCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+
+	AbilityInstance = NewObject<UBaseAbility>(this, AbilityTemplate);
+}
+
 void AArcAcademyCharacter::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
@@ -67,6 +75,14 @@ void AArcAcademyCharacter::Tick(float DeltaSeconds)
 			}
 		}
 
+}
+
+void AArcAcademyCharacter::ActivateAbility(FVector Location)
+{
+	if (IsValid(AbilityInstance))
+	{
+		AbilityInstance->Activate(Location);
+	}
 }
 
 void AArcAcademyCharacter::TakeAnyDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser)
