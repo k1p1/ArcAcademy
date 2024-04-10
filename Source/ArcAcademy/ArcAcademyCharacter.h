@@ -14,6 +14,7 @@ class AArcAcademyCharacter : public ACharacter
 public:
 	AArcAcademyCharacter();
 
+	virtual void BeginPlay() override;
 	// Called every frame.
 	virtual void Tick(float DeltaSeconds) override;
 
@@ -21,6 +22,8 @@ public:
 	FORCEINLINE class UCameraComponent* GetTopDownCameraComponent() const { return TopDownCameraComponent; }
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
+
+	void ActivateAbility(FVector Location);
 
 private:
 	UFUNCTION()
@@ -35,10 +38,16 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class USpringArmComponent* CameraBoom;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditDefaultsOnly)
 	float Health = 100;
 
-	UPROPERTY(EditAnywhere)
-		TSubclassOf<AActor> AfterDeathSpawnActorClass;
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<AActor> AfterDeathSpawnActorClass;
+
+	UPROPERTY()
+	class UBaseAbility* AbilityInstance;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<class UBaseAbility> AbilityTemplate;
 };
 

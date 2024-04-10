@@ -53,6 +53,8 @@ void AArcAcademyPlayerController::SetupInputComponent()
 		EnhancedInputComponent->BindAction(SetDestinationTouchAction, ETriggerEvent::Triggered, this, &AArcAcademyPlayerController::OnTouchTriggered);
 		EnhancedInputComponent->BindAction(SetDestinationTouchAction, ETriggerEvent::Completed, this, &AArcAcademyPlayerController::OnTouchReleased);
 		EnhancedInputComponent->BindAction(SetDestinationTouchAction, ETriggerEvent::Canceled, this, &AArcAcademyPlayerController::OnTouchReleased);
+
+		EnhancedInputComponent->BindAction(ActivateAbilityAction, ETriggerEvent::Started, this, &AArcAcademyPlayerController::OnActivateAbilityTriggered);
 	}
 	else
 	{
@@ -122,4 +124,27 @@ void AArcAcademyPlayerController::OnTouchReleased()
 {
 	bIsTouch = false;
 	OnSetDestinationReleased();
+}
+
+void AArcAcademyPlayerController::OnActivateAbilityTriggered()
+{
+	FHitResult Hit;
+	bool bHitSuccessful = false;
+	if (bIsTouch)
+	{
+		bHitSuccessful = GetHitResultUnderFinger(ETouchIndex::Touch1, ECollisionChannel::ECC_Visibility, true, Hit);
+	}
+	else
+	{
+		bHitSuccessful = GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, true, Hit);
+	}
+
+	if (bHitSuccessful)
+	{
+		AArcAcademyCharacter* ArcAcademyCharacter = Cast<AArcAcademyCharacter>(GetPawn());
+		if (IsValid(ArcAcademyCharacter))
+		{
+			ArcAcademyCharacter->ActivateAbility(Hit.Location);
+		}
+	}
 }
