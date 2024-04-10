@@ -3,7 +3,10 @@
 
 #include "BoltAbility.h"
 #include "../Projectiles/Projectile.h"
+#include "../ArcAcademyAnimInstance.h"
 #include "../ArcAcademy.h"
+
+#include "GameFramework/Character.h"
 
 bool UBoltAbility::Activate(FVector Location)
 {
@@ -13,12 +16,23 @@ bool UBoltAbility::Activate(FVector Location)
   }
 
   UWorld* World = GetWorld();
-  AActor* Owner = Cast<AActor>(GetOuter());
+  ACharacter* Owner = Cast<ACharacter>(GetOuter());
   if (IsValid(Owner) == false)
   {
     UE_LOG(LogArcAcademy, Error, TEXT("IsValid(Owner) == false"));
     return false;
   }
+
+  USkeletalMeshComponent* SkeletalMesh = Owner->GetMesh();
+  if (IsValid(SkeletalMesh))
+  {
+    UArcAcademyAnimInstance* AnimInstance = Cast<UArcAcademyAnimInstance>(SkeletalMesh->GetAnimInstance());
+    if (IsValid(AnimInstance))
+    {
+      AnimInstance->PlayAttackAnimation();
+    }
+  }
+
   FActorSpawnParameters SpawnParameters;
   SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
