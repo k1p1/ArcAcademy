@@ -6,6 +6,7 @@
 #include "NiagaraSystem.h"
 #include "NiagaraFunctionLibrary.h"
 #include "ArcAcademyCharacter.h"
+#include "ArcAcademyHUD.h"
 #include "Engine/World.h"
 #include "EnhancedInputComponent.h"
 #include "InputActionValue.h"
@@ -20,6 +21,15 @@ AArcAcademyPlayerController::AArcAcademyPlayerController()
 	DefaultMouseCursor = EMouseCursor::Default;
 	CachedDestination = FVector::ZeroVector;
 	FollowTime = 0.f;
+}
+
+void AArcAcademyPlayerController::OnPlayerDied()
+{
+	AArcAcademyHUD* HUD = Cast<AArcAcademyHUD>(GetHUD());
+	if (IsValid(HUD))
+	{
+		HUD->ShowEndGameScreen();
+	}
 }
 
 void AArcAcademyPlayerController::BeginPlay()

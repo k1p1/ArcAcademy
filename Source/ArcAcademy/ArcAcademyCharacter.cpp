@@ -5,6 +5,7 @@
 #include "Camera/CameraComponent.h"
 #include "Components/DecalComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/WidgetComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/PlayerController.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -12,7 +13,9 @@
 #include "Engine/World.h"
 #include "Abilities/BaseAbility.h"
 #include "ArcAcademyGameMode.h"
+#include "ArcAcademyPlayerController.h"
 #include "ArcAcademy.h"
+#include "UI/Healthbar.h"
 
 AArcAcademyCharacter::AArcAcademyCharacter()
 {
@@ -43,6 +46,12 @@ AArcAcademyCharacter::AArcAcademyCharacter()
 	TopDownCameraComponent->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
 	TopDownCameraComponent->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 
+	WidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("WidgetComponent"));
+	WidgetComponent->SetCastShadow(false);
+	WidgetComponent->SetReceivesDecals(false);
+	WidgetComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	WidgetComponent->SetupAttachment(RootComponent);
+
 	// Activate ticking in order to update the cursor every frame.
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = true;
@@ -50,11 +59,28 @@ AArcAcademyCharacter::AArcAcademyCharacter()
 	OnTakeAnyDamage.AddDynamic(this, &AArcAcademyCharacter::TakeAnyDamage);
 }
 
+void AArcAcademyCharacter::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+
+	if (IsValid(WidgetComponent->GetWidgetClass()))
+	{
+		WidgetComponent->InitWidget();
+		HealthbarWidget = Cast<UHealthbar>(WidgetComponent->GetUserWidgetObject());
+	}
+}
+
 void AArcAcademyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
 	AbilityInstance = NewObject<UBaseAbility>(this, AbilityTemplate);
+
+	if (IsValid(HealthbarWidget))
+	{
+		float HealthPercent = Health / MaxHealth;
+		HealthbarWidget->SetPercent(HealthPercent);
+	}
 }
 
 void AArcAcademyCharacter::Tick(float DeltaSeconds)
@@ -89,6 +115,11 @@ void AArcAcademyCharacter::TakeAnyDamage(AActor* DamagedActor, float Damage, con
 {
 	Health -= Damage;
 	UE_LOG(LogArcAcademy, Log, TEXT("Health %f"), Health);
+	if (IsValid(HealthbarWidget))
+	{
+		float HealthPercent = Health / MaxHealth;
+		HealthbarWidget->SetPercent(HealthPercent);
+	}
 	if (Health <= 0.0f)
 	{
 		Death();
@@ -107,6 +138,12 @@ void AArcAcademyCharacter::Death()
 	if (IsValid(GameMode))
 	{
 		GameMode->EndGame(false);
+	}
+
+	AArcAcademyPlayerController* PlayerController = Cast<AArcAcademyPlayerController>(GetController());
+	if (IsValid(PlayerController))
+	{
+		PlayerController->OnPlayerDied();
 	}
 
 	FActorSpawnParameters SpawnParameters;
