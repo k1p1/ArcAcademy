@@ -22,6 +22,8 @@ class AArcAcademyPlayerController : public APlayerController
 public:
 	AArcAcademyPlayerController();
 
+	void OnPlayerDied();
+
 	/** Time Threshold to know if it was a short press */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
 	float ShortPressThreshold;

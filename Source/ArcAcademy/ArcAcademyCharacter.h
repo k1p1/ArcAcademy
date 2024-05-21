@@ -14,6 +14,7 @@ class AArcAcademyCharacter : public ACharacter
 public:
 	AArcAcademyCharacter();
 
+	virtual void PostInitializeComponents() override;
 	virtual void BeginPlay() override;
 	// Called every frame.
 	virtual void Tick(float DeltaSeconds) override;
@@ -40,10 +41,19 @@ private:
 	class USpringArmComponent* CameraBoom;
 
 	UPROPERTY(EditDefaultsOnly)
-	class UBehaviorTree* BehaviorTree;
+	class UWidgetComponent* WidgetComponent;
+
+	UPROPERTY()
+	class UHealthbar* HealthbarWidget;
 
 	UPROPERTY(EditDefaultsOnly)
+	class UBehaviorTree* BehaviorTree;
+
+	UPROPERTY()
 	float Health = 100;
+
+	UPROPERTY(EditDefaultsOnly)
+	float MaxHealth = 100;
 
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<AActor> AfterDeathSpawnActorClass;
